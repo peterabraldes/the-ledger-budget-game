@@ -1,0 +1,9 @@
+# Local Claude Code / editor config
+.claude/
+
+# Raw logo working file (not part of the published app)
+logo-raw.png
+
+# OS cruft
+Thumbs.db
+.DS_Store
