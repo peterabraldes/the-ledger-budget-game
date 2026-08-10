@@ -270,9 +270,12 @@
   .prodgrid{display:grid;gap:12px;margin-top:16px}
   .prod{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
   .prod .pnum{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:12px;background:var(--brand-tint);color:var(--brand-deep);margin-top:1px}
+  .prod .pbody{flex:1}
   .prod .pname{font-weight:700;font-size:15.5px}
   .prod .ptag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--gold);margin-left:8px}
   .prod .pdesc{font-size:13.5px;color:var(--ink-soft);margin-top:2px}
+  .prod .psignup{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--brand);text-decoration:none}
+  .prod .psignup:hover{text-decoration:underline;text-underline-offset:3px}
   .ivform{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
   @media(max-width:560px){.ivform{grid-template-columns:1fr}}
   .ivfield{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
@@ -837,21 +840,29 @@ function final(){
 
 /* ================= MICRO-INVESTING LESSON ================= */
 const IV_R=0.07;
-const iv={age:20, perDay:1, purchases:10, mult:1, setting:"1", roundup:null, horizon:20, retAge:65, spend:40000};
+const iv={age:20, lump:0, perDay:1, purchases:10, mult:1, setting:"1", roundup:null, horizon:20, retAge:65, spend:40000};
 const round2=n=>Math.round(n*100)/100;
 function ivWeeklyRoundup(){return iv.roundup!=null?iv.roundup:round2(0.77*iv.purchases*iv.mult);}
 function ivMonthly(){return (iv.perDay*7 + ivWeeklyRoundup())*52/12;}
-// years to reach target with monthly contribution C at annual rate r
-function yearsTo(target,C,r){const i=r/12;if(C<=0)return Infinity;return Math.log(1+target*i/C)/Math.log(1+i)/12;}
+// balance after `years` from a starting lump plus monthly contribution C, all at 7% monthly-compounded
+function ivBalance(years,lump,C){return lump*Math.pow(1+IV_R/12,12*years)+fv(C,IV_R,years);}
+// years to reach target starting from `lump` with monthly contribution C at annual rate r
+function yearsTo(target,lump,C,r){
+  const i=r/12;
+  if(target<=lump)return 0;
+  if(C<=0){ if(lump<=0)return Infinity; return Math.log(target/lump)/Math.log(1+i)/12; }
+  const x=(target + C/i)/(lump + C/i);
+  return x<=1?0:Math.log(x)/Math.log(1+i)/12;
+}
 function fmtYears(y){if(!isFinite(y))return "—";const yr=Math.floor(y),mo=Math.round((y-yr)*12);
   if(mo>=12)return (yr+1)+" yrs";return mo>0?`${yr} yr${yr!==1?"s":""} ${mo} mo`:`${yr} yr${yr!==1?"s":""}`;}
 
 const PRODUCTS=[
- {n:"Acorns", t:"Round-Ups", d:"Rounds each card purchase up to the next dollar and invests the spare change into diversified ETF portfolios. The example below models Acorns."},
- {n:"Stash", t:"Round-Ups", d:"Automatic round-ups plus fractional shares, so you can pick individual stocks and funds with just a few dollars."},
- {n:"Cash App Investing", t:"Round-Ups", d:"Optional round-ups on Cash Card spending, invested into stocks or bitcoin, starting at $1."},
- {n:"SoFi Invest", t:"Auto-Invest", d:"Recurring automatic deposits and fractional shares, bundled with banking and other money tools."},
- {n:"Betterment", t:"Robo-Advisor", d:"Set a recurring deposit and a robo-advisor builds and rebalances a diversified portfolio for you."},
+ {n:"Acorns", t:"Round-Ups", d:"Rounds each card purchase up to the next dollar and invests the spare change into diversified ETF portfolios. The example below models Acorns.", url:"https://www.acorns.com/share/?first_name=Peter&friend_reward=5&shareable_code=MZZLFDW"},
+ {n:"Stash", t:"Round-Ups", d:"Automatic round-ups plus fractional shares, so you can pick individual stocks and funds with just a few dollars.", url:"https://www.stash.com/"},
+ {n:"Cash App Investing", t:"Round-Ups", d:"Optional round-ups on Cash Card spending, invested into stocks or bitcoin, starting at $1.", url:"https://cash.app/"},
+ {n:"SoFi Invest", t:"Auto-Invest", d:"Recurring automatic deposits and fractional shares, bundled with banking and other money tools.", url:"https://www.sofi.com/invest/"},
+ {n:"Betterment", t:"Robo-Advisor", d:"Set a recurring deposit and a robo-advisor builds and rebalances a diversified portfolio for you.", url:"https://www.betterment.com/"},
 ];
 
 function renderInvest(){
@@ -879,7 +890,7 @@ function renderInvest(){
       <h2>Five apps built for this</h2>
       <p>Each one lets you start small and automate the rest. Listed for learning, not as endorsements. Always check current fees and features before signing up.</p>
       <div class="prodgrid">
-        ${PRODUCTS.map((p,i)=>`<div class="prod"><div class="pnum">${i+1}</div><div><div class="pname">${p.n}<span class="ptag">${p.t}</span></div><div class="pdesc">${p.d}</div></div></div>`).join("")}
+        ${PRODUCTS.map((p,i)=>`<div class="prod"><div class="pnum">${i+1}</div><div class="pbody"><div class="pname">${p.n}<span class="ptag">${p.t}</span></div><div class="pdesc">${p.d}</div><a class="psignup" href="${p.url}" target="_blank" rel="noopener noreferrer">Sign up &rarr;</a></div></div>`).join("")}
       </div>
     </div>
 
@@ -888,6 +899,7 @@ function renderInvest(){
       <p>Set your habit and watch it compound at a 7% average annual return. Round-Ups round each purchase up to the nearest dollar, and a multiplier of 2 or 3 rounds up by that many dollars.</p>
       <div class="ivform">
         <div class="ivfield"><label for="ivAge">Your age</label><div class="ctrl"><input id="ivAge" type="number" inputmode="numeric" min="16" max="60" step="1" value="${iv.age}"><span class="pre">yrs</span></div></div>
+        <div class="ivfield"><label for="ivLump">Lump sum deposit</label><div class="ctrl"><span class="pre">$</span><input id="ivLump" type="number" inputmode="decimal" min="0" step="50" value="${iv.lump}"></div><span class="hint">Optional amount you start with.</span></div>
         <div class="ivfield"><label for="ivDay">Invest per day</label><div class="ctrl"><span class="pre">$</span><input id="ivDay" type="number" inputmode="decimal" min="0" max="50" step="0.5" value="${iv.perDay}"></div><span class="hint">A small recurring daily deposit.</span></div>
         <div class="ivfield"><label for="ivPur">Debit purchases per week</label><div class="ctrl"><input id="ivPur" type="number" inputmode="numeric" min="0" max="100" step="1" value="${iv.purchases}"></div></div>
         <div class="ivfield"><label for="ivMult">Round-Up multiplier</label><div class="ctrl"><select id="ivMult"><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="10">10x</option></select></div></div>
@@ -927,7 +939,7 @@ function renderInvest(){
 
   document.getElementById("ivMult").value=String(iv.mult);
   document.getElementById("ivSet").value=String(iv.setting);
-  ["ivAge","ivDay","ivPur","ivMult","ivSet","ivRound","ivSpend","ivRet"].forEach(id=>
+  ["ivAge","ivLump","ivDay","ivPur","ivMult","ivSet","ivRound","ivSpend","ivRet"].forEach(id=>
     document.getElementById(id).addEventListener("input",()=>onIvInput(id)));
   document.querySelectorAll("#ivToggle button").forEach(b=>b.onclick=()=>{
     iv.horizon=+b.dataset.h;
@@ -941,6 +953,7 @@ function renderInvest(){
 function onIvInput(id){
   const val=i=>document.getElementById(i).value;
   if(id==="ivAge") iv.age=clampNum(val("ivAge"),16,60,20);
+  else if(id==="ivLump") iv.lump=clampNum(val("ivLump"),0,10000000,0);
   else if(id==="ivDay") iv.perDay=clampNum(val("ivDay"),0,50,1);
   else if(id==="ivPur"){ iv.purchases=clampNum(val("ivPur"),0,100,10); iv.roundup=null; syncRoundField(); }
   else if(id==="ivMult"){ iv.mult=+val("ivMult"); iv.roundup=null; syncRoundField(); }
@@ -959,11 +972,13 @@ function updateIv(){
     <div class="s"><span class="sl">Weekly Round-Ups</span><span class="sv">${usd(ivWeeklyRoundup())}</span></div>
     <div class="s"><span class="sl">Invested / month</span><span class="sv">${usd(C)}</span></div>
     <div class="s"><span class="sl">Invested / year</span><span class="sv">${usd(C*12)}</span></div>`;
-  const end=fv(C,IV_R,H), contrib=C*12*H;
+  const lump=iv.lump;
+  const end=ivBalance(H,lump,C), contrib=lump+C*12*H;
+  const startLabel=lump>0?`${usd(lump)} start + ${usd(C)}/mo`:`${usd(C)}/mo for ${H} yrs`;
   document.getElementById("ivGrowBody").innerHTML=`
     <div class="gstats">
       <div class="gstat"><div class="gl">Balance in ${H} yrs</div><div class="gv inv">${usd(end)}</div><div class="gg">${usd(contrib)} in + ${usd(end-contrib)} growth</div></div>
-      <div class="gstat"><div class="gl">You put in</div><div class="gv">${usd(contrib)}</div><div class="gg">${usd(C)}/mo for ${H} yrs</div></div>
+      <div class="gstat"><div class="gl">You put in</div><div class="gv">${usd(contrib)}</div><div class="gg">${startLabel}</div></div>
       <div class="gstat"><div class="gl">Growth</div><div class="gv sav">${usd(end-contrib)}</div><div class="gg">from compounding at 7%</div></div>
     </div>
     <canvas id="ivChart" height="260" aria-label="Projected investment growth over ${H} years"></canvas>
@@ -971,33 +986,34 @@ function updateIv(){
       <span class="li"><span class="sw" style="background:var(--gold)"></span>Invested balance @ 7%</span>
       <span class="li"><span class="sw" style="height:0;border-top:2px dashed var(--ink-soft)"></span>What you put in</span>
     </div>`;
-  drawInvestChart(seriesFV(C,IV_R,H), C);
-  const balH=fv(C,IV_R,H);
+  const series=[];for(let y=0;y<=H;y++)series.push(ivBalance(y,lump,C));
+  drawInvestChart(series, C, lump);
+  const balH=end;
   document.getElementById("ivThresh").innerHTML=[100000,200000,300000].map(t=>{
-    const yrs=yearsTo(t,C,IV_R);
+    const yrs=yearsTo(t,lump,C,IV_R);
     return `<div class="threshrow">
       <span class="tier">$${t/1000}k</span>
       <div class="tbarwrap"><span style="width:${Math.min(100,balH/t*100)}%"></span></div>
-      <div class="twhen"><b>${fmtYears(yrs)}</b><small>${isFinite(yrs)?"at age "+Math.round(iv.age+yrs):"add a bit more"}</small></div>
+      <div class="twhen"><b>${yrs===0?"already there":fmtYears(yrs)}</b><small>${!isFinite(yrs)?"add a bit more":yrs===0?"from your lump sum":"at age "+Math.round(iv.age+yrs)}</small></div>
     </div>`;}).join("");
   const FIRE=25*iv.spend;
   const coastNow=FIRE/Math.pow(1+IV_R, Math.max(0,iv.retAge-iv.age));
   let coastAge=null;
-  for(let a=iv.age;a<=iv.retAge;a++){if(fv(C,IV_R,a-iv.age)>=FIRE/Math.pow(1+IV_R,iv.retAge-a)){coastAge=a;break;}}
+  for(let a=iv.age;a<=iv.retAge;a++){if(ivBalance(a-iv.age,lump,C)>=FIRE/Math.pow(1+IV_R,iv.retAge-a)){coastAge=a;break;}}
   let fireAge=null;
-  for(let a=iv.age;a<=95;a++){if(fv(C,IV_R,a-iv.age)>=FIRE){fireAge=a;break;}}
+  for(let a=iv.age;a<=95;a++){if(ivBalance(a-iv.age,lump,C)>=FIRE){fireAge=a;break;}}
   document.getElementById("ivFire").innerHTML=`
     <div class="firecard coast"><div class="ft">Coast FIRE</div>
       <div class="fbig">${usd(coastNow)}</div>
-      <div class="fsmall">Investing that much by today would coast to full FIRE by ${iv.retAge} with zero further contributions.<br>${coastAge!=null?`On this habit you reach Coast FIRE at <b>age ${coastAge}</b>.`:`This habit alone does not reach Coast FIRE by ${iv.retAge}. Try raising your daily amount.`}</div>
+      <div class="fsmall">Investing that much by today would coast to full FIRE by ${iv.retAge} with zero further contributions.<br>${coastAge!=null?`On this plan you reach Coast FIRE at <b>age ${coastAge}</b>.`:`This plan does not reach Coast FIRE by ${iv.retAge}. Try a bigger start or daily amount.`}</div>
     </div>
     <div class="firecard"><div class="ft">Full FIRE</div>
       <div class="fbig">${usd(FIRE)}</div>
-      <div class="fsmall">25 times your ${usd(iv.spend)} yearly spending, the classic "retire on it" number.<br>${fireAge!=null?`On this habit you hit FIRE at <b>age ${fireAge}</b>.`:`Micro-investing alone does not reach full FIRE. It is a strong start, not the whole plan.`}</div>
+      <div class="fsmall">25 times your ${usd(iv.spend)} yearly spending, the classic "retire on it" number.<br>${fireAge!=null?`On this plan you hit FIRE at <b>age ${fireAge}</b>.`:`This plan does not reach full FIRE on its own. It is a strong start, not the whole plan.`}</div>
     </div>`;
 }
 
-function drawInvestChart(series, monthly){
+function drawInvestChart(series, monthly, lump){
   const cv=document.getElementById("ivChart");if(!cv)return;
   const dpr=Math.min(2,window.devicePixelRatio||1);
   const cssW=cv.clientWidth||720, cssH=260;
@@ -1018,7 +1034,7 @@ function drawInvestChart(series, monthly){
   for(let yv=0;yv<=years;yv+=xstep){g.fillStyle=col("--ink-soft");g.fillText("Yr "+yv,X(yv),y0+7);}
   const draw=(data,color,w,dash)=>{g.strokeStyle=color;g.lineWidth=w;g.setLineDash(dash||[]);g.lineJoin="round";
     g.beginPath();data.forEach((v,i)=>{const px=X(i),py=Y(v);i?g.lineTo(px,py):g.moveTo(px,py);});g.stroke();g.setLineDash([]);};
-  const contrib=[];for(let yv=0;yv<=years;yv++)contrib.push(monthly*12*yv);
+  const contrib=[];for(let yv=0;yv<=years;yv++)contrib.push((lump||0)+monthly*12*yv);
   g.fillStyle=col("--wants-tint");g.globalAlpha=.5;g.beginPath();g.moveTo(X(0),Y(0));
   series.forEach((v,i)=>g.lineTo(X(i),Y(v)));g.lineTo(X(years),y0);g.closePath();g.fill();g.globalAlpha=1;
   draw(contrib,col("--ink-soft"),1.5,[4,4]);
