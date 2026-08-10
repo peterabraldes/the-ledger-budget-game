@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F6F7F5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#101311" media="(prefers-color-scheme: dark)">
-<meta name="description" content="A real life budgeting game for young adults on a Philadelphia paycheck. Set your wage, make 13 choices, balance the month, and see savings grow over 10 or 40 years. Presented by Insight Engine.">
+<meta name="description" content="A real life budgeting game plus a micro-investing lesson for young adults on a Philadelphia paycheck. Presented by Insight Engine.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="The Ledger">
 <meta property="og:title" content="The Ledger: A Real Life Budgeting Game">
-<meta property="og:description" content="Learn to budget on a real Philadelphia paycheck. Presented by Insight Engine.">
+<meta property="og:description" content="Budget a real Philadelphia paycheck, then learn to automate micro-investing. Presented by Insight Engine.">
 <meta property="og:type" content="website">
 <title>The Ledger: A Real Life Budgeting Game</title>
 <style>
@@ -27,7 +27,7 @@
     --shadow-lift:0 2px 4px rgba(20,30,20,.06), 0 16px 40px rgba(20,30,20,.12);
     --mono:ui-monospace,"SF Mono","Cascadia Code","Segoe UI Mono",Consolas,monospace;
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --r:14px; --ring-track:var(--line);
+    --r:14px; --ring-track:var(--line); --navh:52px;
   }
   @media (prefers-color-scheme:dark){
     :root{
@@ -70,8 +70,19 @@
   .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
   .wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
 
+  /* ---------- top tab nav ---------- */
+  .topnav{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .topnav-inner{max-width:820px;margin:0 auto;padding:9px 20px;height:var(--navh);display:flex;align-items:center;gap:14px}
+  .brandmark{font-weight:800;letter-spacing:-.02em;font-size:16px;color:var(--ink);white-space:nowrap}
+  .tabs{margin-left:auto;display:inline-flex;background:var(--line);border-radius:999px;padding:3px;gap:2px}
+  .tabs button{font:inherit;font-weight:650;font-size:13.5px;border:none;background:none;color:var(--ink-soft);
+    padding:7px 15px;border-radius:999px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .tabs button.on{background:var(--card);color:var(--brand);box-shadow:var(--shadow)}
+  .tabs button:hover:not(.on){color:var(--ink)}
+  @media(max-width:430px){.brandmark{display:none}.tabs{margin:0 auto}}
+
   /* ---------- sticky meter ---------- */
-  .meter{position:sticky;top:0;z-index:20;background:var(--card);
+  .meter{position:sticky;top:var(--navh);z-index:20;background:var(--card);
     border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
   .meter.hidden{display:none}
   .meter-inner{max-width:820px;margin:0 auto;padding:12px 20px}
@@ -259,7 +270,65 @@
   .footbrand em{font-style:italic;font-weight:400;color:var(--ink-soft)}
   .credit{font-size:12.5px;color:var(--ink-soft);margin-top:20px}
   .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+
+  /* ---------- micro-investing lesson ---------- */
+  .sec-block{margin:36px 0}
+  .sec-block h2{font-size:22px;margin-bottom:8px}
+  .sec-block p{font-size:15px;color:var(--ink-soft);max-width:64ch}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  @media(max-width:560px){.twocol{grid-template-columns:1fr}}
+  .thencard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+  .thencard .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:7px}
+  .thencard.then .k{color:var(--deficit)} .thencard.now .k{color:var(--emerald)}
+  .thencard p{margin:0;font-size:14px;color:var(--ink)}
+  .prodgrid{display:grid;gap:12px;margin-top:16px}
+  .prod{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .prod .pnum{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:12px;background:var(--brand-tint);color:var(--brand-deep);margin-top:1px}
+  .prod .pname{font-weight:700;font-size:15.5px}
+  .prod .ptag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--gold);margin-left:8px}
+  .prod .pdesc{font-size:13.5px;color:var(--ink-soft);margin-top:2px}
+  .ivform{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+  @media(max-width:560px){.ivform{grid-template-columns:1fr}}
+  .ivfield{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+  .ivfield label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);font-weight:700}
+  .ivfield .ctrl{display:flex;align-items:center;gap:5px;border:1.5px solid var(--line-strong);border-radius:9px;padding:8px 11px}
+  .ivfield .ctrl:focus-within{border-color:var(--brand)}
+  .ivfield .ctrl input,.ivfield .ctrl select{border:none;background:none;font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink);width:100%}
+  .ivfield .ctrl input:focus,.ivfield .ctrl select:focus{outline:none}
+  .ivfield .ctrl .pre{color:var(--ink-soft);font-family:var(--mono)}
+  .ivfield .hint{font-size:11px;color:var(--ink-soft)}
+  .ivsummary{display:flex;gap:24px;flex-wrap:wrap;background:var(--brand-tint);border-radius:12px;padding:14px 18px;margin:6px 0 4px}
+  .ivsummary .s{display:flex;flex-direction:column}
+  .ivsummary .sl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700}
+  .ivsummary .sv{font-family:var(--mono);font-size:20px;font-weight:750;color:var(--brand-deep);letter-spacing:-.02em}
+  .thresh{display:grid;gap:10px;margin-top:6px}
+  .threshrow{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;box-shadow:var(--shadow)}
+  .threshrow .tier{font-family:var(--mono);font-weight:750;font-size:19px;color:var(--brand)}
+  .threshrow .tbarwrap{height:8px;background:var(--line);border-radius:5px;overflow:hidden}
+  .threshrow .tbarwrap span{display:block;height:100%;background:var(--gold);transition:width .5s}
+  .threshrow .twhen{text-align:right;font-family:var(--mono);white-space:nowrap}
+  .threshrow .twhen b{font-size:15px} .threshrow .twhen small{display:block;color:var(--ink-soft);font-size:11px}
+  .firecards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  @media(max-width:560px){.firecards{grid-template-columns:1fr}}
+  .firecard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .firecard .ft{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--brand)}
+  .firecard.coast .ft{color:var(--gold)}
+  .firecard .fbig{font-family:var(--mono);font-size:25px;font-weight:750;letter-spacing:-.02em;margin:7px 0 3px}
+  .firecard .fsmall{font-size:13px;color:var(--ink-soft);line-height:1.5}
+  .callout{background:var(--brand-tint);border-radius:12px;padding:15px 18px;font-size:14.5px;margin-top:16px;line-height:1.55}
+  .callout b{color:var(--brand-deep)}
+  .disc{font-size:12px;color:var(--ink-soft);margin-top:12px;font-style:italic}
 </style>
+
+<div class="topnav" id="topnav">
+  <div class="topnav-inner">
+    <span class="brandmark">The&nbsp;Ledger</span>
+    <div class="tabs" id="tabs">
+      <button data-mode="game" class="on">Budget Game</button>
+      <button data-mode="invest">Micro-Investing</button>
+    </div>
+  </div>
+</div>
 
 <div class="meter hidden" id="meter">
   <div class="meter-inner">
@@ -389,6 +458,7 @@ function seriesFV(P,r,years){const out=[];for(let y=0;y<=years;y++)out.push(fv(P
 
 /* ---------------- state ---------------- */
 let players=[], pIdx=0, qIdx=0, phase="intro";
+let mode="game";
 const app=document.getElementById("app");
 const meter=document.getElementById("meter");
 
@@ -399,7 +469,7 @@ function secTotal(p,sec){return Q.filter(q=>q.sec===sec).reduce((a,q)=>{const c=
 
 /* ---------------- meter ---------------- */
 function updateMeter(){
-  if(phase!=="play"){meter.classList.add("hidden");return;}
+  if(mode!=="game"||phase!=="play"){meter.classList.add("hidden");return;}
   meter.classList.remove("hidden");
   const p=cur(), net=netOf(p), sp=spent(p), left=net-sp;
   document.getElementById("mIncome").textContent=usd(net);
@@ -419,12 +489,15 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 
 /* ---------------- screens ---------------- */
 function render(){updateMeter();window.scrollTo({top:0,behavior:"instant"});
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.mode===mode));
+  if(mode==="invest")return renderInvest();
   if(phase==="intro")return intro();
   if(phase==="setup")return setup();
   if(phase==="play")return play();
   if(phase==="result")return result();
   if(phase==="final")return final();
 }
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;render();});
 
 function intro(){
   app.innerHTML=`<div class="screen">
@@ -776,9 +849,203 @@ function final(){
   document.getElementById("again").onclick=()=>{players=[];setupCount=1;setupNames=[""];setupWage=[];setupHours=[];phase="intro";render();};
 }
 
+/* ================= MICRO-INVESTING LESSON ================= */
+const IV_R=0.07;
+const iv={age:20, perDay:1, purchases:10, mult:1, setting:"1", roundup:null, horizon:20, retAge:65, spend:40000};
+const round2=n=>Math.round(n*100)/100;
+function ivWeeklyRoundup(){return iv.roundup!=null?iv.roundup:round2(0.77*iv.purchases*iv.mult);}
+function ivMonthly(){return (iv.perDay*7 + ivWeeklyRoundup())*52/12;}
+// years to reach target with monthly contribution C at annual rate r
+function yearsTo(target,C,r){const i=r/12;if(C<=0)return Infinity;return Math.log(1+target*i/C)/Math.log(1+i)/12;}
+function fmtYears(y){if(!isFinite(y))return "—";const yr=Math.floor(y),mo=Math.round((y-yr)*12);
+  if(mo>=12)return (yr+1)+" yrs";return mo>0?`${yr} yr${yr!==1?"s":""} ${mo} mo`:`${yr} yr${yr!==1?"s":""}`;}
+
+const PRODUCTS=[
+ {n:"Acorns", t:"Round-Ups", d:"Rounds each card purchase up to the next dollar and invests the spare change into diversified ETF portfolios. The example below models Acorns."},
+ {n:"Stash", t:"Round-Ups", d:"Automatic round-ups plus fractional shares, so you can pick individual stocks and funds with just a few dollars."},
+ {n:"Cash App Investing", t:"Round-Ups", d:"Optional round-ups on Cash Card spending, invested into stocks or bitcoin, starting at $1."},
+ {n:"SoFi Invest", t:"Auto-Invest", d:"Recurring automatic deposits and fractional shares, bundled with banking and other money tools."},
+ {n:"Betterment", t:"Robo-Advisor", d:"Set a recurring deposit and a robo-advisor builds and rebalances a diversified portfolio for you."},
+];
+
+function renderInvest(){
+  app.innerHTML=`<div class="screen">
+    <div class="eyebrow">Micro-Investing</div>
+    <h1 style="font-size:clamp(30px,5vw,46px)">Automate your way into the market</h1>
+    <p class="lead">You do not need a lot of money or perfect timing to start investing. You need a habit that runs on its own. This lesson shows how spare change and a dollar a day can grow, using Acorns as a worked example.</p>
+
+    <div class="sec-block">
+      <h2>How investing changed</h2>
+      <p>A generation ago, buying stock meant calling a broker, paying a commission on every trade, and buying whole shares. Getting started took real money. That is no longer true.</p>
+      <div class="twocol">
+        <div class="thencard then"><div class="k">Then</div><p>A commission on every trade, often $5 to $50. Whole shares only, so one share of a pricey company could cost hundreds of dollars.</p></div>
+        <div class="thencard now"><div class="k">Now</div><p>Most brokerages dropped direct trade commissions in 2019. Fractional shares let you buy a slice of a stock for as little as $1.</p></div>
+      </div>
+    </div>
+
+    <div class="sec-block">
+      <h2>Why waiting for the perfect moment fails</h2>
+      <p>Nobody can reliably guess the market's highs and lows, and the people who wait for the perfect time usually just keep waiting. The practical answer is dollar cost averaging: invest a fixed amount on a fixed schedule, whatever the price.</p>
+      <div class="callout">When prices are high your money buys fewer shares, and when they are low it buys more, so over time you pay the average and skip the guessing game. <b>Time in the market beats timing the market.</b> It is the same lesson that runs through this whole project: the practical habit you start today beats the perfect plan you never begin.</div>
+    </div>
+
+    <div class="sec-block">
+      <h2>Five apps built for this</h2>
+      <p>Each one lets you start small and automate the rest. Listed for learning, not as endorsements. Always check current fees and features before signing up.</p>
+      <div class="prodgrid">
+        ${PRODUCTS.map((p,i)=>`<div class="prod"><div class="pnum">${i+1}</div><div><div class="pname">${p.n}<span class="ptag">${p.t}</span></div><div class="pdesc">${p.d}</div></div></div>`).join("")}
+      </div>
+    </div>
+
+    <div class="sec-block">
+      <h2>The Acorns example</h2>
+      <p>Set your habit and watch it compound at a 7% average annual return. Round-Ups round each purchase up to the nearest dollar, and a multiplier of 2 or 3 rounds up by that many dollars.</p>
+      <div class="ivform">
+        <div class="ivfield"><label for="ivAge">Your age</label><div class="ctrl"><input id="ivAge" type="number" inputmode="numeric" min="16" max="60" step="1" value="${iv.age}"><span class="pre">yrs</span></div></div>
+        <div class="ivfield"><label for="ivDay">Invest per day</label><div class="ctrl"><span class="pre">$</span><input id="ivDay" type="number" inputmode="decimal" min="0" max="50" step="0.5" value="${iv.perDay}"></div><span class="hint">A small recurring daily deposit.</span></div>
+        <div class="ivfield"><label for="ivPur">Debit purchases per week</label><div class="ctrl"><input id="ivPur" type="number" inputmode="numeric" min="0" max="100" step="1" value="${iv.purchases}"></div></div>
+        <div class="ivfield"><label for="ivMult">Round-Up multiplier</label><div class="ctrl"><select id="ivMult"><option value="1">1x</option><option value="2">2x</option><option value="3">3x</option><option value="10">10x</option></select></div></div>
+        <div class="ivfield"><label for="ivSet">Round-Up setting</label><div class="ctrl"><select id="ivSet"><option value="1">Nearest dollar</option><option value="2">Nearest $2</option><option value="5">Nearest $5</option></select></div></div>
+        <div class="ivfield"><label for="ivRound">Weekly Round-Ups</label><div class="ctrl"><span class="pre">$</span><input id="ivRound" type="number" inputmode="decimal" min="0" step="0.5" value="${ivWeeklyRoundup()}"></div><span class="hint">Auto-estimated. Edit to override.</span></div>
+      </div>
+      <div class="ivsummary" id="ivSummary"></div>
+    </div>
+
+    <div class="growth">
+      <div class="ghead">
+        <div><h3 id="ivGrowTitle">Growth over 20 years</h3><div class="gsub">Daily deposits plus Round-Ups, invested at 7% and compounded monthly.</div></div>
+        <div class="htoggle" id="ivToggle" role="group" aria-label="Projection length">
+          <button data-h="10">10 yrs</button><button data-h="20" class="on">20 yrs</button><button data-h="30">30 yrs</button>
+        </div>
+      </div>
+      <div id="ivGrowBody"></div>
+    </div>
+
+    <div class="sec-block">
+      <h2>How long to each milestone</h2>
+      <p>At a 7% return, here is roughly when your balance would cross each tier if you keep this habit going. The bar shows your progress by the end of the range above.</p>
+      <div class="thresh" id="ivThresh"></div>
+    </div>
+
+    <div class="sec-block">
+      <h2>Coast FIRE vs FIRE</h2>
+      <p>FIRE means Financial Independence, Retire Early: enough invested to live off, usually about 25 times your yearly spending. Coast FIRE is the gentler cousin. Once your investments alone will grow into that number by retirement, you can stop adding money and simply coast, covering today's bills from work.</p>
+      <div class="ivform" style="margin-bottom:0">
+        <div class="ivfield"><label for="ivSpend">Yearly spending in retirement</label><div class="ctrl"><span class="pre">$</span><input id="ivSpend" type="number" inputmode="numeric" min="10000" max="200000" step="1000" value="${iv.spend}"></div></div>
+        <div class="ivfield"><label for="ivRet">Retirement age</label><div class="ctrl"><input id="ivRet" type="number" inputmode="numeric" min="40" max="75" step="1" value="${iv.retAge}"><span class="pre">yrs</span></div></div>
+      </div>
+      <div class="firecards" id="ivFire"></div>
+      <p class="disc">Educational estimates only, not financial advice. Real returns vary year to year and are never guaranteed. The 4% rule (25 times spending) and a flat 7% return are simplifying assumptions.</p>
+    </div>
+  </div>`;
+
+  document.getElementById("ivMult").value=String(iv.mult);
+  document.getElementById("ivSet").value=String(iv.setting);
+  ["ivAge","ivDay","ivPur","ivMult","ivSet","ivRound","ivSpend","ivRet"].forEach(id=>
+    document.getElementById(id).addEventListener("input",()=>onIvInput(id)));
+  document.querySelectorAll("#ivToggle button").forEach(b=>b.onclick=()=>{
+    iv.horizon=+b.dataset.h;
+    document.querySelectorAll("#ivToggle button").forEach(x=>x.classList.toggle("on",x===b));
+    document.getElementById("ivGrowTitle").textContent=`Growth over ${iv.horizon} years`;
+    updateIv();
+  });
+  updateIv();
+}
+
+function onIvInput(id){
+  const val=i=>document.getElementById(i).value;
+  if(id==="ivAge") iv.age=clampNum(val("ivAge"),16,60,20);
+  else if(id==="ivDay") iv.perDay=clampNum(val("ivDay"),0,50,1);
+  else if(id==="ivPur"){ iv.purchases=clampNum(val("ivPur"),0,100,10); iv.roundup=null; syncRoundField(); }
+  else if(id==="ivMult"){ iv.mult=+val("ivMult"); iv.roundup=null; syncRoundField(); }
+  else if(id==="ivSet") iv.setting=val("ivSet");
+  else if(id==="ivRound"){ const n=parseFloat(val("ivRound")); iv.roundup=isNaN(n)?null:Math.max(0,n); }
+  else if(id==="ivSpend") iv.spend=clampNum(val("ivSpend"),1000,1000000,40000);
+  else if(id==="ivRet") iv.retAge=clampNum(val("ivRet"),40,75,65);
+  updateIv();
+}
+function clampNum(v,lo,hi,def){const n=parseFloat(v);if(isNaN(n))return def;return Math.min(hi,Math.max(lo,n));}
+function syncRoundField(){const el=document.getElementById("ivRound");if(el&&document.activeElement!==el)el.value=ivWeeklyRoundup();}
+
+function updateIv(){
+  const C=ivMonthly(), H=iv.horizon;
+  document.getElementById("ivSummary").innerHTML=`
+    <div class="s"><span class="sl">Weekly Round-Ups</span><span class="sv">${usd(ivWeeklyRoundup())}</span></div>
+    <div class="s"><span class="sl">Invested / month</span><span class="sv">${usd(C)}</span></div>
+    <div class="s"><span class="sl">Invested / year</span><span class="sv">${usd(C*12)}</span></div>`;
+  const end=fv(C,IV_R,H), contrib=C*12*H;
+  document.getElementById("ivGrowBody").innerHTML=`
+    <div class="gstats">
+      <div class="gstat"><div class="gl">Balance in ${H} yrs</div><div class="gv inv">${usd(end)}</div><div class="gg">${usd(contrib)} in + ${usd(end-contrib)} growth</div></div>
+      <div class="gstat"><div class="gl">You put in</div><div class="gv">${usd(contrib)}</div><div class="gg">${usd(C)}/mo for ${H} yrs</div></div>
+      <div class="gstat"><div class="gl">Growth</div><div class="gv sav">${usd(end-contrib)}</div><div class="gg">from compounding at 7%</div></div>
+    </div>
+    <canvas id="ivChart" height="260" aria-label="Projected investment growth over ${H} years"></canvas>
+    <div class="glegend">
+      <span class="li"><span class="sw" style="background:var(--gold)"></span>Invested balance @ 7%</span>
+      <span class="li"><span class="sw" style="height:0;border-top:2px dashed var(--ink-soft)"></span>What you put in</span>
+    </div>`;
+  drawInvestChart(seriesFV(C,IV_R,H), C);
+  const balH=fv(C,IV_R,H);
+  document.getElementById("ivThresh").innerHTML=[100000,200000,300000].map(t=>{
+    const yrs=yearsTo(t,C,IV_R);
+    return `<div class="threshrow">
+      <span class="tier">$${t/1000}k</span>
+      <div class="tbarwrap"><span style="width:${Math.min(100,balH/t*100)}%"></span></div>
+      <div class="twhen"><b>${fmtYears(yrs)}</b><small>${isFinite(yrs)?"at age "+Math.round(iv.age+yrs):"add a bit more"}</small></div>
+    </div>`;}).join("");
+  const FIRE=25*iv.spend;
+  const coastNow=FIRE/Math.pow(1+IV_R, Math.max(0,iv.retAge-iv.age));
+  let coastAge=null;
+  for(let a=iv.age;a<=iv.retAge;a++){if(fv(C,IV_R,a-iv.age)>=FIRE/Math.pow(1+IV_R,iv.retAge-a)){coastAge=a;break;}}
+  let fireAge=null;
+  for(let a=iv.age;a<=95;a++){if(fv(C,IV_R,a-iv.age)>=FIRE){fireAge=a;break;}}
+  document.getElementById("ivFire").innerHTML=`
+    <div class="firecard coast"><div class="ft">Coast FIRE</div>
+      <div class="fbig">${usd(coastNow)}</div>
+      <div class="fsmall">Investing that much by today would coast to full FIRE by ${iv.retAge} with zero further contributions.<br>${coastAge!=null?`On this habit you reach Coast FIRE at <b>age ${coastAge}</b>.`:`This habit alone does not reach Coast FIRE by ${iv.retAge}. Try raising your daily amount.`}</div>
+    </div>
+    <div class="firecard"><div class="ft">Full FIRE</div>
+      <div class="fbig">${usd(FIRE)}</div>
+      <div class="fsmall">25 times your ${usd(iv.spend)} yearly spending, the classic "retire on it" number.<br>${fireAge!=null?`On this habit you hit FIRE at <b>age ${fireAge}</b>.`:`Micro-investing alone does not reach full FIRE. It is a strong start, not the whole plan.`}</div>
+    </div>`;
+}
+
+function drawInvestChart(series, monthly){
+  const cv=document.getElementById("ivChart");if(!cv)return;
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  const cssW=cv.clientWidth||720, cssH=260;
+  cv.width=cssW*dpr; cv.height=cssH*dpr; cv.style.height=cssH+"px";
+  const g=cv.getContext("2d"); g.scale(dpr,dpr);
+  const css=getComputedStyle(document.documentElement), col=n=>css.getPropertyValue(n).trim();
+  const padL=52,padR=16,padT=14,padB=26,W=cssW,H=cssH,x0=padL,x1=W-padR,y0=H-padB,y1=padT;
+  const years=series.length-1;
+  const maxV=Math.max(series[years], monthly*12*years, 10), nice=niceCeil(maxV);
+  const X=y=>x0+(x1-x0)*(y/years), Y=v=>y0-(y0-y1)*(v/nice);
+  g.clearRect(0,0,W,H);
+  g.font="11px "+css.getPropertyValue("--mono"); g.textBaseline="middle";
+  for(let i=0;i<=4;i++){const val=nice*i/4,y=Y(val);
+    g.strokeStyle=col("--line");g.lineWidth=1;g.beginPath();g.moveTo(x0,y);g.lineTo(x1,y);g.stroke();
+    g.fillStyle=col("--ink-soft");g.textAlign="right";g.fillText(kfmt(val),x0-8,y);}
+  g.textAlign="center";g.textBaseline="top";
+  const xstep=years<=10?2:5;
+  for(let yv=0;yv<=years;yv+=xstep){g.fillStyle=col("--ink-soft");g.fillText("Yr "+yv,X(yv),y0+7);}
+  const draw=(data,color,w,dash)=>{g.strokeStyle=color;g.lineWidth=w;g.setLineDash(dash||[]);g.lineJoin="round";
+    g.beginPath();data.forEach((v,i)=>{const px=X(i),py=Y(v);i?g.lineTo(px,py):g.moveTo(px,py);});g.stroke();g.setLineDash([]);};
+  const contrib=[];for(let yv=0;yv<=years;yv++)contrib.push(monthly*12*yv);
+  g.fillStyle=col("--wants-tint");g.globalAlpha=.5;g.beginPath();g.moveTo(X(0),Y(0));
+  series.forEach((v,i)=>g.lineTo(X(i),Y(v)));g.lineTo(X(years),y0);g.closePath();g.fill();g.globalAlpha=1;
+  draw(contrib,col("--ink-soft"),1.5,[4,4]);
+  draw(series,col("--gold"),2.5);
+  g.fillStyle=col("--gold");g.beginPath();g.arc(X(years),Y(series[years]),3.5,0,7);g.fill();
+}
+
 /* redraw canvas on resize so it stays sharp/responsive */
-window.addEventListener("resize",()=>{if(phase==="result"){const p=cur();
-  drawChart(seriesFV(p.grow.savMonthly,0.04,resHorizon),seriesFV(p.grow.invMonthly,0.07,resHorizon),p.grow.savMonthly,p.grow.invMonthly);}});
+window.addEventListener("resize",()=>{
+  if(mode==="invest") updateIv();
+  else if(phase==="result"){const p=cur();
+    drawChart(seriesFV(p.grow.savMonthly,0.04,resHorizon),seriesFV(p.grow.invMonthly,0.07,resHorizon),p.grow.savMonthly,p.grow.invMonthly);}
+});
 
 render();
 </script>
