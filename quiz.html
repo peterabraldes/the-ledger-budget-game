@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F7F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101311" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Thirty flashcards on paychecks, interest, compounding, and habits. A facilitator's deck for the Insight Engine budgeting seminar.">
+<title>Thirty Questions — Budgeting Seminar</title>
+<style>
+/* ============================================================
+   Tokens inherited from index.html so the quiz reads as part of
+   the same course. Topic hues are the game's needs/wants/savings
+   palette reused to mean something: each section of the lesson
+   keeps its colour from card to progress rail to handout.
+   ============================================================ */
+:root{
+  --paper:#F6F7F5; --card:#FFFFFF; --ink:#171A17; --ink-soft:#4C534C; --ink-faint:#79817A;
+  --line:#E1E4DF; --line-strong:#CCD1CA;
+  --pay:#3E6B8C;   --pay-tint:#E7EEF4;
+  --cost:#C8871E;  --cost-tint:#F7EEDD;
+  --grow:#12946B;  --grow-tint:#E6F3EE;
+  --habit:#1F63D8; --habit-tint:#E8EFFC;
+  --right:#12946B; --right-tint:#E6F3EE;
+  --wrong:#D14B3C; --wrong-tint:#FBE9E6;
+  --shadow:0 1px 2px rgba(20,30,20,.04), 0 8px 24px rgba(20,30,20,.06);
+  --lift:0 2px 4px rgba(20,30,20,.06), 0 16px 40px rgba(20,30,20,.12);
+  --serif:"Iowan Old Style","Charter","Georgia","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code","Segoe UI Mono",Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#101311; --card:#191D19; --ink:#E9EEE9; --ink-soft:#9AA39B; --ink-faint:#767F77;
+    --line:#2A2F2A; --line-strong:#3A403A;
+    --pay:#7FB0D4;   --pay-tint:#15242E;
+    --cost:#E4AE52;  --cost-tint:#2C2314;
+    --grow:#3FC79A;  --grow-tint:#132A22;
+    --habit:#6BA5FF; --habit-tint:#152741;
+    --right:#3FC79A; --right-tint:#132A22;
+    --wrong:#EE7C6E; --wrong-tint:#2E1815;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.4);
+    --lift:0 2px 4px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#F6F7F5; --card:#FFFFFF; --ink:#171A17; --ink-soft:#4C534C; --ink-faint:#79817A;
+  --line:#E1E4DF; --line-strong:#CCD1CA;
+  --pay:#3E6B8C; --pay-tint:#E7EEF4; --cost:#C8871E; --cost-tint:#F7EEDD;
+  --grow:#12946B; --grow-tint:#E6F3EE; --habit:#1F63D8; --habit-tint:#E8EFFC;
+  --right:#12946B; --right-tint:#E6F3EE; --wrong:#D14B3C; --wrong-tint:#FBE9E6;
+  --shadow:0 1px 2px rgba(20,30,20,.04), 0 8px 24px rgba(20,30,20,.06);
+  --lift:0 2px 4px rgba(20,30,20,.06), 0 16px 40px rgba(20,30,20,.12);
+}
+:root[data-theme="dark"]{
+  --paper:#101311; --card:#191D19; --ink:#E9EEE9; --ink-soft:#9AA39B; --ink-faint:#767F77;
+  --line:#2A2F2A; --line-strong:#3A403A;
+  --pay:#7FB0D4; --pay-tint:#15242E; --cost:#E4AE52; --cost-tint:#2C2314;
+  --grow:#3FC79A; --grow-tint:#132A22; --habit:#6BA5FF; --habit-tint:#152741;
+  --right:#3FC79A; --right-tint:#132A22; --wrong:#EE7C6E; --wrong-tint:#2E1815;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.4);
+  --lift:0 2px 4px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+.mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--habit); outline-offset:3px; border-radius:4px}
+
+/* ---------- masthead ---------- */
+header{
+  border-bottom:1px solid var(--line); background:var(--card);
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  padding:14px 22px;
+}
+header h1{
+  font-family:var(--serif); font-size:1.0625rem; font-weight:600;
+  margin:0; letter-spacing:-.01em;
+}
+header .sub{font-size:.75rem; color:var(--ink-faint); letter-spacing:.02em}
+header .spacer{margin-left:auto}
+.score{
+  font-family:var(--mono); font-size:.8125rem; color:var(--ink-soft);
+  display:flex; gap:12px; align-items:baseline;
+}
+.score b{color:var(--ink); font-size:1rem}
+
+button{font:inherit; color:inherit; cursor:pointer}
+.btn{
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:9px;
+  padding:7px 15px; font-size:.8125rem; font-weight:500;
+  transition:background .13s ease, border-color .13s ease;
+}
+.btn:hover{background:var(--line); border-color:var(--ink-faint)}
+.btn.solid{background:var(--ink); border-color:var(--ink); color:var(--paper)}
+.btn.solid:hover{opacity:.86}
+
+/* ---------- stage ---------- */
+main{
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  padding:clamp(20px,4vw,44px) 22px 26px; width:100%;
+}
+.card{
+  width:100%; max-width:760px; background:var(--card);
+  border:1px solid var(--line); border-radius:var(--r);
+  box-shadow:var(--shadow); overflow:hidden;
+  display:flex; flex-direction:column;
+}
+/* The top rule states the card's section in its own hue. */
+.card::before{content:""; display:block; height:4px; background:var(--topic)}
+.card[data-topic="pay"]{--topic:var(--pay);   --topic-tint:var(--pay-tint)}
+.card[data-topic="cost"]{--topic:var(--cost); --topic-tint:var(--cost-tint)}
+.card[data-topic="grow"]{--topic:var(--grow); --topic-tint:var(--grow-tint)}
+.card[data-topic="habit"]{--topic:var(--habit);--topic-tint:var(--habit-tint)}
+
+.card-in{padding:clamp(22px,3.4vw,38px); display:flex; flex-direction:column; gap:clamp(18px,2.4vw,26px)}
+.eyebrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.tag{
+  font-size:.6875rem; font-weight:650; text-transform:uppercase; letter-spacing:.09em;
+  color:var(--topic); background:var(--topic-tint);
+  padding:3px 9px; border-radius:20px;
+}
+.count{font-family:var(--mono); font-size:.75rem; color:var(--ink-faint); margin-left:auto}
+
+.q{
+  font-family:var(--serif); font-weight:600;
+  font-size:clamp(1.375rem,3.1vw,2rem); line-height:1.24;
+  letter-spacing:-.015em; margin:0; text-wrap:balance;
+}
+
+.opts{display:flex; flex-direction:column; gap:11px}
+.opt{
+  display:flex; align-items:flex-start; gap:14px; width:100%; text-align:left;
+  background:var(--paper); border:1.5px solid var(--line-strong);
+  border-radius:11px; padding:15px 17px;
+  font-size:clamp(.9375rem,1.5vw,1.0625rem); line-height:1.4;
+  transition:border-color .13s ease, background .13s ease, transform .13s ease;
+}
+.opt:hover:not(:disabled){border-color:var(--topic); transform:translateY(-1px)}
+.opt:disabled{cursor:default}
+.opt .key{
+  flex:none; width:26px; height:26px; border-radius:7px;
+  background:var(--card); border:1.5px solid var(--line-strong);
+  font-family:var(--mono); font-size:.8125rem; font-weight:600;
+  display:grid; place-items:center; color:var(--ink-soft);
+}
+.opt.is-right{border-color:var(--right); background:var(--right-tint)}
+.opt.is-right .key{background:var(--right); border-color:var(--right); color:#fff}
+.opt.is-wrong{border-color:var(--wrong); background:var(--wrong-tint)}
+.opt.is-wrong .key{background:var(--wrong); border-color:var(--wrong); color:#fff}
+.opt.is-dim{opacity:.5}
+
+.why{
+  border-left:3px solid var(--topic); background:var(--topic-tint);
+  border-radius:0 9px 9px 0; padding:14px 17px;
+  font-size:clamp(.875rem,1.4vw,1rem); line-height:1.5;
+}
+.why .verdict{font-weight:650; display:block; margin-bottom:3px}
+.why .verdict.ok{color:var(--right)}
+.why .verdict.no{color:var(--wrong)}
+@media (prefers-reduced-motion:no-preference){
+  .why{animation:rise .22s ease}
+  @keyframes rise{from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:none}}
+}
+
+/* ---------- controls + progress rail ---------- */
+.pad{width:100%; max-width:760px; display:flex; flex-direction:column; gap:14px; margin-top:18px}
+.nav{display:flex; gap:9px; align-items:center; flex-wrap:wrap}
+.nav .spacer{margin-left:auto}
+
+/* One tick per card, coloured by section: the rail is a map of the lesson. */
+.rail{display:flex; gap:3px; height:22px; align-items:flex-end}
+.tick{
+  flex:1; height:7px; border-radius:2px; background:var(--line-strong);
+  border:0; padding:0; min-width:0; transition:height .13s ease, opacity .13s ease;
+}
+.tick[data-topic="pay"]{background:var(--pay)}
+.tick[data-topic="cost"]{background:var(--cost)}
+.tick[data-topic="grow"]{background:var(--grow)}
+.tick[data-topic="habit"]{background:var(--habit)}
+.tick:not(.seen){opacity:.26}
+.tick.now{height:18px}
+.tick:hover{height:14px}
+
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:.75rem; color:var(--ink-soft)}
+.legend span{display:flex; align-items:center; gap:6px}
+.legend i{width:9px; height:9px; border-radius:2px; display:block}
+
+.keys{font-size:.75rem; color:var(--ink-faint)}
+.keys kbd{
+  font-family:var(--mono); font-size:.6875rem; background:var(--card);
+  border:1px solid var(--line-strong); border-bottom-width:2px;
+  border-radius:5px; padding:1px 5px; margin:0 1px;
+}
+
+/* ---------- end panel ---------- */
+.done{text-align:center; display:flex; flex-direction:column; gap:16px; align-items:center}
+.done .big{font-family:var(--mono); font-size:clamp(2.5rem,8vw,4rem); font-weight:600; line-height:1; letter-spacing:-.03em}
+.done h2{font-family:var(--serif); font-size:clamp(1.25rem,2.6vw,1.625rem); margin:0; text-wrap:balance}
+.bysec{display:flex; flex-direction:column; gap:7px; width:100%; max-width:420px; text-align:left}
+.bysec .row{display:flex; align-items:center; gap:10px; font-size:.875rem}
+.bysec .row .nm{flex:1}
+.bysec .row .sc{font-family:var(--mono); color:var(--ink-soft)}
+.bysec .bar{flex:none; width:96px; height:7px; border-radius:4px; background:var(--line); overflow:hidden}
+.bysec .bar i{display:block; height:100%}
+
+/* ---------- handout ---------- */
+.sheet{display:none}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff; color:#000; font-size:10.5pt; display:block}
+  header,main,.pad,.keys{display:none !important}
+  .sheet{display:block}
+  .sheet h1{font-family:var(--serif); font-size:16pt; margin:0 0 2pt}
+  .sheet .note{font-size:8.5pt; color:#555; margin:0 0 12pt}
+  .sheet ol{margin:0; padding:0 0 0 20pt; columns:2; column-gap:16pt}
+  .sheet li{break-inside:avoid; margin:0 0 9pt; padding-left:2pt}
+  .sheet .qq{font-weight:600; display:block}
+  .sheet .oo{display:block; margin-top:1.5pt}
+  .sheet .aa{display:block; margin-top:2pt; font-size:9pt; color:#333}
+  .sheet .sec{font-size:7.5pt; text-transform:uppercase; letter-spacing:.08em; color:#666}
+  body.hide-key .sheet .aa{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Thirty Questions</h1>
+  <span class="sub">Paychecks · Interest · Compounding · Habits</span>
+  <div class="spacer"></div>
+  <div class="score" id="score"></div>
+</header>
+
+<main>
+  <div class="card" id="card" data-topic="pay"><div class="card-in" id="cardIn"></div></div>
+
+  <div class="pad">
+    <div class="nav">
+      <button class="btn" id="prev">&larr; Back</button>
+      <button class="btn" id="reveal">Show answer</button>
+      <button class="btn solid" id="next">Next &rarr;</button>
+      <div class="spacer"></div>
+      <button class="btn" id="shuffle">Shuffle</button>
+      <button class="btn" id="restart">Restart</button>
+      <button class="btn" id="printKey">Print</button>
+    </div>
+
+    <div class="rail" id="rail"></div>
+
+    <div class="legend">
+      <span><i style="background:var(--pay)"></i>Your paycheck</span>
+      <span><i style="background:var(--cost)"></i>Interest that costs you</span>
+      <span><i style="background:var(--grow)"></i>Interest that pays you</span>
+      <span><i style="background:var(--habit)"></i>Habits</span>
+    </div>
+
+    <p class="keys">
+      <kbd>A</kbd><kbd>B</kbd> answer · <kbd>Space</kbd> show answer ·
+      <kbd>&larr;</kbd><kbd>&rarr;</kbd> move · <kbd>S</kbd> shuffle · <kbd>R</kbd> restart
+    </p>
+  </div>
+</main>
+
+<div class="sheet" id="sheet"></div>
+
+<script>
+"use strict";
+
+/* Four sections, in teaching order. The hue is the section's identity
+   everywhere it appears — card rule, tag, progress tick, handout. */
+const SECTIONS = {
+  pay:  "Your paycheck",
+  cost: "Interest that costs you",
+  grow: "Interest that pays you",
+  habit:"Habits"
+};
+
+/* Figures are the seminar's own: $15/hour full time in Philadelphia is about
+   $2,600 gross and $2,077 net; savings modelled at 4%, investing at 7%. */
+const DECK = [
+  { s:"pay", q:"You earn $15 an hour, full time. That is about $2,600 a month before anything comes out. What actually lands in your account?",
+    a:["About $2,080","About $2,450"], c:0,
+    why:"Roughly a fifth is gone before you see it: FICA 7.65%, Pennsylvania 3.07%, the Philadelphia wage tax 3.75%, plus federal income tax." },
+
+  { s:"pay", q:"Which number do you build a budget on?",
+    a:["Take-home pay","Gross pay"], c:0,
+    why:"Gross is the number you negotiate. Take-home is the only number you can actually spend." },
+
+  { s:"pay", q:"Philadelphia residents pay a city wage tax on top of federal and state income tax.",
+    a:["True — about 3.75%","False, Pennsylvania has no city wage tax"], c:0,
+    why:"It comes out of every paycheck, and it is why the same wage pays less here than in most of the state." },
+
+  { s:"pay", q:"The standard deduction means a low earner can owe no federal income tax. Does that also cancel Social Security and Medicare?",
+    a:["No — FICA comes out of the first dollar","Yes, no income tax means no payroll tax"], c:0,
+    why:"Payroll tax has no standard deduction and no brackets. That 7.65% goes regardless of how little you earn." },
+
+  { s:"pay", q:"You get a $2 an hour raise. Does your take-home go up by the full amount?",
+    a:["No, roughly 80% of it","Yes, all of it"], c:0,
+    why:"Every extra dollar is taxed too. Worth remembering when you compare two job offers by their headline wage." },
+
+  { s:"pay", q:"In the 70/20/10 target, what is the 10?",
+    a:["Savings","Taxes"], c:0,
+    why:"Taxes already came out before the split. The 10% is money you keep — 70% needs, 20% wants, 10% saved." },
+
+  { s:"pay", q:"Rent, utilities, groceries, getting to work, health insurance, minimum debt payments. Which bucket?",
+    a:["Needs","Wants"], c:0,
+    why:"Needs keep you housed, fed, working, and covered. They are the 70%, and usually the hardest to move." },
+
+  { s:"pay", q:"Streaming subscriptions and your coffee habit?",
+    a:["Wants","Needs"], c:0,
+    why:"Wants are not the enemy. A fifth of your take-home is budgeted for them on purpose — a budget with no room for fun gets abandoned." },
+
+  { s:"pay", q:"Your needs are eating 85% of take-home. What is the most useful first move?",
+    a:["Look hard at the biggest line, usually housing","Cancel a $12 subscription"], c:0,
+    why:"Go after the number big enough to matter. Against rent, $12 is a rounding error — it feels like progress without being any." },
+
+  { s:"cost", q:"A credit card at 24% APR against a money market paying 4% APY. What is the relationship between those two rates?",
+    a:["The card costs about six times what the savings earns","They roughly cancel each other out"], c:0,
+    why:"You cannot save your way out of a balance charging six times what your cash earns. The card wins that race every time." },
+
+  { s:"cost", q:"You have $1,000 saved at 4% and $1,000 owed on a card at 24%. Best move?",
+    a:["Pay off the card","Leave both where they are"], c:0,
+    why:"Clearing 24% debt is a guaranteed 24% return, with no risk and no market. Nothing you can buy offers that." },
+
+  { s:"cost", q:"A card charges 1.99% per month. What is the effective annual rate?",
+    a:["About 26.7%","About 23.9%"], c:0,
+    why:"12 × 1.99 = 23.9%, but you pay interest on the interest. Compounded monthly it is 26.7% — the gap is the compounding." },
+
+  { s:"cost", q:"You pay only the minimum on a credit card. Early on, where does most of that payment go?",
+    a:["Interest","Principal"], c:0,
+    why:"Minimums are set to keep the balance alive as long as possible. It is how a $1,000 balance quietly takes years to clear." },
+
+  { s:"cost", q:"Store financing says “no interest if paid in full within 12 months.” You miss it by one month.",
+    a:["You can owe interest back-dated to the purchase date","You owe interest only from month 13 onward"], c:0,
+    why:"Deferred interest is not the same product as 0% APR. It has been accruing the whole time and lands in one go. Check which one you signed." },
+
+  { s:"cost", q:"You borrow $500, pay a $75 fee, and repay in two weeks. As an annual rate, that is:",
+    a:["About 390%","About 15%"], c:0,
+    why:"15% for two weeks, twenty-six times a year. The fee sounds small precisely because it is never quoted as a rate." },
+
+  { s:"cost", q:"Which figure tells you what you will actually earn on savings?",
+    a:["APY","APR"], c:0,
+    why:"APY includes compounding; APR does not. Lenders like to quote APR. As a saver, look for APY." },
+
+  { s:"cost", q:"Two savings accounts, both stating 4%. One compounds monthly, the other annually.",
+    a:["The monthly one ends up ahead","They finish identical"], c:0,
+    why:"Monthly compounding starts earning interest on interest sooner. Same headline rate, different money at the end." },
+
+  { s:"cost", q:"You have a 3% student loan and a money market paying 4.5%. Rushing to pay the loan off early:",
+    a:["Costs you a little — the cash earns more than the loan charges","Is always the right move"], c:0,
+    why:"Not all debt is bad debt. Compare the rate you pay against the rate you earn. This is the whole reason to know your rates." },
+
+  { s:"grow", q:"You invest $100 a month at 7% for ten years. You put in $12,000. What is it worth?",
+    a:["About $17,300","About $12,900"], c:0,
+    why:"Around $5,300 you did not earn at a job. That is compounding, and ten years is barely enough time for it to get going." },
+
+  { s:"grow", q:"Same $100 a month, same 7%, but for forty years. You put in $48,000. What is it worth?",
+    a:["About $262,000","About $96,000"], c:0,
+    why:"You contributed $48,000. The other $214,000 is time. This is the most important number in the class." },
+
+  { s:"grow", q:"Which matters more over a whole career?",
+    a:["Starting early","Picking the perfect investment"], c:0,
+    why:"A decade of ordinary returns beats a late start with brilliant ones. Time is the one input you cannot buy back later." },
+
+  { s:"grow", q:"At 7% a year, roughly how long does money take to double?",
+    a:["About 10 years","About 20 years"], c:0,
+    why:"Rule of 72: divide 72 by the rate. 72 ÷ 7 is a bit over 10 years. Handy for doing this in your head." },
+
+  { s:"grow", q:"Your first $1,000 of savings. Emergency fund at 4%, or invested at 7%?",
+    a:["Emergency fund","Invested"], c:0,
+    why:"Without a cushion the next surprise goes on a card at 24%, which wipes out the extra 3% and much more. Liquidity first, return second." },
+
+  { s:"grow", q:"Round-ups invest the spare change from each purchase. Does money that small matter?",
+    a:["Yes, because it is automatic and you never feel it","No, the amounts are too small to count"], c:0,
+    why:"The habit is the point, not the amount. Small and consistent beats large and occasional, because occasional stops." },
+
+  { s:"habit", q:"What best predicts whether a budget actually works?",
+    a:["Looking at it on a schedule","How detailed it is"], c:0,
+    why:"The most detailed budget in the world does nothing if it is never opened. A rough one you check every week will beat it." },
+
+  { s:"habit", q:"How often should you look at your accounts?",
+    a:["Weekly","At tax time"], c:0,
+    why:"Weekly is often enough to catch a problem while it is still small, and rare enough that you will keep doing it." },
+
+  { s:"habit", q:"Why weekly rather than monthly?",
+    a:["You can still change how the month turns out","It is less work"], c:0,
+    why:"At month end you are reading a report on something already finished. Mid-month you can still act on it." },
+
+  { s:"habit", q:"When should money for savings leave your checking account?",
+    a:["The day you are paid","Whatever is left at the end of the month"], c:0,
+    why:"Pay yourself first. Nothing is ever left over at the end of the month — that is not a discipline problem, it is arithmetic." },
+
+  { s:"habit", q:"You blow the budget one week. Best response?",
+    a:["Write down what happened and adjust next week","Give up and start fresh next month"], c:0,
+    why:"One bad week is data. Walking away from the system is the only real failure, and it usually starts with one bad week." },
+
+  { s:"habit", q:"What is a budget actually for?",
+    a:["Showing you what your money is doing so you can decide","Stopping you from spending"], c:0,
+    why:"It is an instrument, not a punishment. It tells you the truth; what you do about it stays your call." }
+];
+
+/* Every card above is authored with the correct answer first, which would make
+   "always pick A" a winning strategy and teach nothing. Flip a fixed subset once
+   at load: the answer position varies, and because it happens before anything
+   renders, the screen and the printed handout always agree. Fixed rather than
+   random so a facilitator's copy matches the students' between runs. */
+const FLIP = new Set([1,2,5,7,9,11,13,14,16,18,20,22,24,26,29]);
+DECK.forEach((q,i)=>{
+  if(FLIP.has(i)){ q.a = [q.a[1], q.a[0]]; q.c = 1 - q.c; }
+});
+
+/* ---------- state ---------- */
+let order = DECK.map((_, i) => i);
+let at = 0;
+let answers = new Array(DECK.length).fill(null);   // index picked, or "shown"
+const card = document.getElementById("card");
+const cardIn = document.getElementById("cardIn");
+
+const cur = () => DECK[order[at]];
+const curId = () => order[at];
+const isSettled = () => answers[curId()] !== null;
+
+/* ---------- render ---------- */
+function render(){
+  const q = cur(), id = curId(), given = answers[id];
+  card.dataset.topic = q.s;
+
+  const rows = q.a.map((text, i) => {
+    let cls = "opt";
+    if(given !== null){
+      if(i === q.c) cls += " is-right";
+      else if(given === i) cls += " is-wrong";
+      else cls += " is-dim";
+    }
+    return `<button class="${cls}" data-pick="${i}" ${given!==null?"disabled":""}>
+      <span class="key">${"AB"[i]}</span><span>${q.a[i]}</span></button>`;
+  }).join("");
+
+  let why = "";
+  if(given !== null){
+    const got = given === q.c;
+    const verdict = given === "shown" ? "" :
+      `<span class="verdict ${got?"ok":"no"}">${got?"Correct":"Not quite"}</span>`;
+    why = `<div class="why">${verdict}${q.why}</div>`;
+  }
+
+  cardIn.innerHTML = `
+    <div class="eyebrow">
+      <span class="tag">${SECTIONS[q.s]}</span>
+      <span class="count mono">${at+1} / ${DECK.length}</span>
+    </div>
+    <p class="q">${q.q}</p>
+    <div class="opts">${rows}</div>
+    ${why}`;
+
+  cardIn.querySelectorAll("[data-pick]").forEach(b=>{
+    b.onclick = () => pick(+b.dataset.pick);
+  });
+
+  document.getElementById("prev").disabled = at === 0;
+  document.getElementById("reveal").disabled = isSettled();
+  document.getElementById("next").textContent =
+    at === DECK.length - 1 ? "See results" : "Next →";
+
+  paintRail(); paintScore();
+}
+
+function paintRail(){
+  document.getElementById("rail").innerHTML = order.map((id,i)=>{
+    const seen = answers[id] !== null;
+    return `<button class="tick${seen?" seen":""}${i===at?" now":""}"
+      data-topic="${DECK[id].s}" data-go="${i}"
+      title="${i+1}. ${SECTIONS[DECK[id].s]}" aria-label="Card ${i+1}"></button>`;
+  }).join("");
+  document.getElementById("rail").querySelectorAll("[data-go]").forEach(t=>{
+    t.onclick = () => { at = +t.dataset.go; render(); };
+  });
+}
+
+function paintScore(){
+  /* Only real picks are scored. Cards revealed without answering are excluded
+     entirely, so running the deck as plain flashcards does not read as 0 out of 30. */
+  let right = 0, done = 0;
+  answers.forEach((g,id)=>{
+    if(typeof g !== "number") return;
+    done++; if(g === DECK[id].c) right++;
+  });
+  document.getElementById("score").innerHTML = done
+    ? `<span><b>${right}</b> / ${done} right</span>`
+    : `<span class="mono" style="color:var(--ink-faint)">30 cards</span>`;
+}
+
+/* ---------- actions ---------- */
+function pick(i){
+  if(isSettled()) return;
+  answers[curId()] = i;
+  render();
+}
+function reveal(){
+  if(isSettled()) return;
+  answers[curId()] = "shown";     // counted as attempted, never as correct
+  render();
+}
+function go(d){
+  const n = at + d;
+  if(n < 0) return;
+  if(n >= DECK.length){ finish(); return; }
+  at = n; render();
+}
+
+function finish(){
+  const per = {};
+  Object.keys(SECTIONS).forEach(k => per[k] = {right:0, total:0});
+  let right = 0;
+  DECK.forEach((q,id)=>{
+    per[q.s].total++;
+    if(answers[id] === q.c){ right++; per[q.s].right++; }
+  });
+  const pct = Math.round(right / DECK.length * 100);
+  const note = pct >= 90 ? "That is a room ready to run their own numbers."
+    : pct >= 70 ? "Solid. Worth a second pass over the sections that slipped."
+    : pct >= 50 ? "A good start. The rates and the compounding cards reward a rerun."
+    : "Plenty to build on — run the deck again and watch the score move.";
+
+  cardIn.innerHTML = `<div class="done">
+    <span class="tag" style="--topic:var(--grow);--topic-tint:var(--grow-tint)">Results</span>
+    <div class="big">${right}<span style="color:var(--ink-faint)">/${DECK.length}</span></div>
+    <h2>${note}</h2>
+    <div class="bysec">
+      ${Object.keys(SECTIONS).map(k=>{
+        const p = per[k], w = p.total ? p.right/p.total*100 : 0;
+        return `<div class="row">
+          <span class="nm">${SECTIONS[k]}</span>
+          <span class="bar"><i style="width:${w}%;background:var(--${k})"></i></span>
+          <span class="sc">${p.right}/${p.total}</span></div>`;
+      }).join("")}
+    </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;justify-content:center">
+      <button class="btn solid" id="again">Run it again</button>
+      <button class="btn" id="mix">Shuffle and run</button>
+    </div>
+  </div>`;
+  card.dataset.topic = "grow";
+  document.getElementById("again").onclick = () => restart(false);
+  document.getElementById("mix").onclick = () => restart(true);
+  document.getElementById("reveal").disabled = true;
+  paintScore();
+}
+
+function restart(mix){
+  order = DECK.map((_,i)=>i);
+  if(mix){
+    for(let i = order.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+  }
+  answers = new Array(DECK.length).fill(null);
+  at = 0; render();
+}
+
+document.getElementById("prev").onclick = () => go(-1);
+document.getElementById("next").onclick = () => go(1);
+document.getElementById("reveal").onclick = reveal;
+document.getElementById("shuffle").onclick = () => restart(true);
+document.getElementById("restart").onclick = () => restart(false);
+
+/* Print offers the answer key or a blank student copy. */
+document.getElementById("printKey").onclick = () => {
+  const key = confirm("Print with the answers?\n\nOK — facilitator copy, answers included.\nCancel — student copy, questions only.");
+  document.body.classList.toggle("hide-key", !key);
+  window.print();
+};
+
+document.addEventListener("keydown", e=>{
+  if(e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if(k === "a" || k === "1"){ e.preventDefault(); pick(0); }
+  else if(k === "b" || k === "2"){ e.preventDefault(); pick(1); }
+  else if(k === " " || k === "enter"){ e.preventDefault(); isSettled() ? go(1) : reveal(); }
+  else if(k === "arrowright" || k === "n"){ e.preventDefault(); go(1); }
+  else if(k === "arrowleft" || k === "p"){ e.preventDefault(); go(-1); }
+  else if(k === "s"){ e.preventDefault(); restart(true); }
+  else if(k === "r"){ e.preventDefault(); restart(false); }
+});
+
+/* ---------- handout ---------- */
+document.getElementById("sheet").innerHTML = `
+  <h1>Thirty Questions &mdash; Budgeting Seminar</h1>
+  <p class="note">Paychecks, interest, compounding, and habits. Figures assume $15/hour full time in
+    Philadelphia: about $2,600 gross and $2,077 take-home per month, savings at 4%, investing at 7%.</p>
+  <ol>${DECK.map(q=>`<li>
+    <span class="sec">${SECTIONS[q.s]}</span>
+    <span class="qq">${q.q}</span>
+    <span class="oo">A. ${q.a[0]}</span>
+    <span class="oo">B. ${q.a[1]}</span>
+    <span class="aa"><b>${"AB"[q.c]}.</b> ${q.why}</span>
+  </li>`).join("")}</ol>`;
+
+render();
+</script>
+</body>
+</html>
