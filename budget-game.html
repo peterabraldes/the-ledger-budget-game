@@ -366,6 +366,27 @@
   .qwhy{margin-top:16px;font-size:14.5px;line-height:1.55;background:var(--brand-tint);border-radius:10px;padding:13px 16px}
   .qwhy b{color:var(--brand-deep)}
   .qhint{margin-top:16px;font-size:13px;color:var(--ink-soft)}
+  /* teams */
+  .scoreboard{display:flex;align-items:stretch;gap:10px;margin:16px 0 4px}
+  .scoreboard .team{flex:1;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--card);
+    border:1.5px solid var(--line);border-radius:12px;padding:11px 15px;box-shadow:var(--shadow);transition:.15s;min-width:0}
+  .scoreboard .team.active{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint),var(--shadow)}
+  .scoreboard .team .tn{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .scoreboard .team .tn .emb{width:16px;height:16px;flex:none}
+  .scoreboard .team .ts{font-family:var(--mono);font-weight:750;font-size:22px;letter-spacing:-.02em;flex:none}
+  .scoreboard .team.t0 .ts{color:var(--bell)} .scoreboard .team.t1 .ts{color:var(--cactus)}
+  .scoreboard .vs{align-self:center;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+  .turnnote{font-size:13.5px;font-weight:700;margin:12px 0 -4px}
+  .turnnote.t0{color:var(--bell)} .turnnote.t1{color:var(--cactus)}
+  .qresult{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px;text-align:center;animation:fade .3s ease both}
+  .qresult .rwin{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:14px;text-wrap:balance}
+  .qresult .rscores{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+  .qresult .rteam{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:120px}
+  .qresult .rteam .rn{font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px}
+  .qresult .rteam .rs{font-family:var(--mono);font-size:34px;font-weight:800;letter-spacing:-.02em}
+  .qresult .rteam.t0 .rs{color:var(--bell)} .qresult .rteam.t1 .rs{color:var(--cactus)}
+  .qsetup-names{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:4px 0 24px}
+  @media(max-width:520px){.qsetup-names{grid-template-columns:1fr}}
 </style>
 
 <div class="topnav" id="topnav">
@@ -1173,17 +1194,65 @@ const QUIZ=[
  {q:"When your income rises, the healthier move is to...",a:["Let spending rise to match","Increase what you save and invest"],c:1,why:"Directing raises toward saving avoids lifestyle creep and speeds up your goals."},
  {q:"When is the best time to start saving or investing?",a:["Now, even a little","Once everything is perfect"],c:0,why:"The practical habit you start today beats the perfect plan you never begin, and starting early gives compounding more time."},
 ];
+let quizView="setup", quizTeamsOn=true, quizTeamNames=["Philadelphia","Phoenix"];
 let quizOrder=null, quizIdx=0, quizAns={};
-function quizScore(){let s=0;for(const k in quizAns){if(quizAns[k]===QUIZ[k].c)s++;}return s;}
+const jump=()=>window.scrollTo({top:0,behavior:"instant"});
+// score for a team (0/1): questions whose turn-position parity matches, answered correctly
+function teamScore(t){let s=0;for(let p=0;p<quizOrder.length;p++){if(p%2===t){const oi=quizOrder[p];if(quizAns[oi]===QUIZ[oi].c)s++;}}return s;}
+function soloScore(){let s=0;for(const k in quizAns){if(quizAns[k]===QUIZ[k].c)s++;}return s;}
 
 function renderQuiz(){
-  if(!quizOrder)quizOrder=QUIZ.map((_,i)=>i);
+  if(quizView==="setup")return renderQuizSetup();
+  if(quizView==="results")return renderQuizResults();
+  return renderQuizPlay();
+}
+
+function renderQuizSetup(){
   app.innerHTML=`<div class="screen">
-    <div class="eyebrow">Quiz &middot; Test your knowledge</div>
-    <h1 style="font-size:clamp(28px,5vw,42px)">Thirty questions, two answers each</h1>
-    <p class="lead" style="font-size:15px">Read the question, pick A or B, then reveal the answer. Run it on your own or with the whole class.</p>
+    <div class="eyebrow">Quiz &middot; Setup</div>
+    <h1 style="font-size:clamp(28px,5vw,42px)">How do you want to play?</h1>
+    <p class="lead" style="font-size:15px">Split the room into two teams and keep score, or run solo to review the material on your own.</p>
+    <div class="htoggle big" id="qModeToggle" role="group" aria-label="Quiz mode">
+      <button data-t="1" class="${quizTeamsOn?'on':''}">Two teams</button><button data-t="0" class="${quizTeamsOn?'':'on'}">Solo review</button>
+    </div>
+    <div id="qTeamFields"></div>
+    <button class="btn" id="qStart">Start the quiz &rarr;</button>
+  </div>`;
+  const drawFields=()=>{
+    const box=document.getElementById("qTeamFields");
+    box.innerHTML=quizTeamsOn?`<div class="qsetup-names">
+      <div class="field"><label for="tn0">Team 1</label><input id="tn0" maxlength="22" value="${esc(quizTeamNames[0])}" placeholder="Philadelphia"></div>
+      <div class="field"><label for="tn1">Team 2</label><input id="tn1" maxlength="22" value="${esc(quizTeamNames[1])}" placeholder="Phoenix"></div>
+    </div>`:`<p class="qhint" style="margin:2px 0 24px">Solo mode tracks how many you get right, with no teams.</p>`;
+    box.querySelectorAll("input").forEach(inp=>{const i=+inp.id.slice(2);inp.oninput=()=>quizTeamNames[i]=inp.value;});
+  };
+  drawFields();
+  document.querySelectorAll("#qModeToggle button").forEach(b=>b.onclick=()=>{
+    quizTeamsOn=b.dataset.t==="1";
+    document.querySelectorAll("#qModeToggle button").forEach(x=>x.classList.toggle("on",x===b));
+    drawFields();
+  });
+  document.getElementById("qStart").onclick=()=>{
+    quizTeamNames=quizTeamNames.map((n,i)=>(n&&n.trim())||["Philadelphia","Phoenix"][i]);
+    quizOrder=QUIZ.map((_,i)=>i);quizIdx=0;quizAns={};quizView="play";render();
+  };
+}
+
+function renderQuizPlay(){
+  if(!quizOrder)quizOrder=QUIZ.map((_,i)=>i);
+  const emb=t=>`<span class="emb ${t===0?"bell":"cactus"}"></span>`;
+  const board=quizTeamsOn?`<div class="scoreboard">
+    <div class="team t0" id="team0"><span class="tn">${emb(0)}${esc(quizTeamNames[0])}</span><span class="ts" id="ts0">0</span></div>
+    <div class="vs">vs</div>
+    <div class="team t1" id="team1"><span class="tn">${emb(1)}${esc(quizTeamNames[1])}</span><span class="ts" id="ts1">0</span></div>
+  </div>`:"";
+  app.innerHTML=`<div class="screen">
+    <div class="eyebrow">Quiz &middot; ${quizTeamsOn?"Two teams":"Solo review"}</div>
+    <h1 style="font-size:clamp(26px,5vw,40px)">Thirty questions, two answers each</h1>
+    ${board}
     <div class="quizbar"><div class="qprog"><span id="qFill"></span></div>
       <div class="qm"><span id="qCount"></span><span id="qScore"></span></div></div>
+    <div id="quizTurn"></div>
     <div id="quizCard"></div>
     <div class="btnrow" style="margin-top:18px">
       <button class="btn ghost" id="qPrev">&larr; Previous</button>
@@ -1192,13 +1261,24 @@ function renderQuiz(){
     <div class="backline"><button class="linkbtn" id="qShuffle">Shuffle</button>
       <button class="linkbtn" id="qRestart" style="margin-left:16px">Restart</button></div>
   </div>`;
+  const last=QUIZ.length-1;
   const paint=()=>{
-    const oi=quizOrder[quizIdx], item=QUIZ[oi], chosen=quizAns[oi], answered=chosen!==undefined;
+    const oi=quizOrder[quizIdx], item=QUIZ[oi], chosen=quizAns[oi], answered=chosen!==undefined, turn=quizIdx%2;
     document.getElementById("qCount").textContent=`Question ${quizIdx+1} of ${QUIZ.length}`;
-    document.getElementById("qScore").textContent=`${quizScore()} correct of ${Object.keys(quizAns).length} answered`;
+    if(quizTeamsOn){
+      document.getElementById("ts0").textContent=teamScore(0);
+      document.getElementById("ts1").textContent=teamScore(1);
+      document.getElementById("team0").classList.toggle("active",turn===0);
+      document.getElementById("team1").classList.toggle("active",turn===1);
+      document.getElementById("qScore").textContent=`${teamScore(0)+teamScore(1)} answered right`;
+      document.getElementById("quizTurn").innerHTML=`<div class="turnnote t${turn}">${esc(quizTeamNames[turn])}, your question.</div>`;
+    }else{
+      document.getElementById("qScore").textContent=`${soloScore()} correct of ${Object.keys(quizAns).length} answered`;
+      document.getElementById("quizTurn").innerHTML="";
+    }
     document.getElementById("qFill").style.width=((quizIdx+1)/QUIZ.length*100)+"%";
     const opt=i=>{let cls="qopt";if(answered){if(i===item.c)cls+=" correct";else if(i===chosen)cls+=" wrong";}
-      const tag=answered&&i===item.c?'<span class="qtag ok">Correct</span>':(answered&&i===chosen&&i!==item.c?'<span class="qtag no">Your pick</span>':'');
+      const tag=answered&&i===item.c?'<span class="qtag ok">Correct</span>':(answered&&i===chosen&&i!==item.c?'<span class="qtag no">Picked</span>':'');
       return `<button class="${cls}" data-opt="${i}" ${answered?"disabled":""}><span class="qletter">${i===0?"A":"B"}</span><span class="qtext">${item.a[i]}</span>${tag}</button>`;};
     document.getElementById("quizCard").innerHTML=`<div class="qcard">
       <div class="qq">${item.q}</div>
@@ -1207,13 +1287,42 @@ function renderQuiz(){
     </div>`;
     if(!answered)document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{quizAns[oi]=+b.dataset.opt;paint();});
     document.getElementById("qPrev").disabled=quizIdx===0;
-    document.getElementById("qNext").disabled=quizIdx===QUIZ.length-1;
+    document.getElementById("qNext").textContent=quizIdx===last?"See results →":"Next →";
   };
   paint();
-  document.getElementById("qPrev").onclick=()=>{if(quizIdx>0){quizIdx--;paint();window.scrollTo({top:0,behavior:"instant"});}};
-  document.getElementById("qNext").onclick=()=>{if(quizIdx<QUIZ.length-1){quizIdx++;paint();window.scrollTo({top:0,behavior:"instant"});}};
-  document.getElementById("qShuffle").onclick=()=>{for(let i=quizOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[quizOrder[i],quizOrder[j]]=[quizOrder[j],quizOrder[i]];}quizIdx=0;paint();window.scrollTo({top:0,behavior:"instant"});};
-  document.getElementById("qRestart").onclick=()=>{quizAns={};quizIdx=0;quizOrder=QUIZ.map((_,i)=>i);paint();window.scrollTo({top:0,behavior:"instant"});};
+  document.getElementById("qPrev").onclick=()=>{if(quizIdx>0){quizIdx--;paint();jump();}};
+  document.getElementById("qNext").onclick=()=>{if(quizIdx===last){quizView="results";render();}else{quizIdx++;paint();jump();}};
+  document.getElementById("qShuffle").onclick=()=>{for(let i=quizOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[quizOrder[i],quizOrder[j]]=[quizOrder[j],quizOrder[i]];}quizIdx=0;quizAns={};paint();jump();};
+  document.getElementById("qRestart").onclick=()=>{quizView="setup";render();};
+}
+
+function renderQuizResults(){
+  const answered=Object.keys(quizAns).length;
+  let inner;
+  if(quizTeamsOn){
+    const s0=teamScore(0), s1=teamScore(1);
+    const win = s0===s1 ? "It is a tie!" : `${esc(quizTeamNames[s0>s1?0:1])} wins!`;
+    inner=`<div class="rwin">${win}</div>
+      <div class="rscores">
+        <div class="rteam t0"><span class="rn"><span class="emb bell"></span>${esc(quizTeamNames[0])}</span><span class="rs">${s0}</span></div>
+        <div class="rteam t1"><span class="rn"><span class="emb cactus"></span>${esc(quizTeamNames[1])}</span><span class="rs">${s1}</span></div>
+      </div>
+      <p class="qhint">${answered<QUIZ.length?`${answered} of ${QUIZ.length} questions were answered.`:"All thirty questions answered. Well played."}</p>`;
+  }else{
+    inner=`<div class="rwin">You got ${soloScore()} of ${QUIZ.length} right</div>
+      <p class="qhint">${answered<QUIZ.length?`You answered ${answered} of ${QUIZ.length}.`:"You went through the whole deck. Nice work."}</p>`;
+  }
+  app.innerHTML=`<div class="screen">
+    <div class="eyebrow">Quiz &middot; Results</div>
+    <h1 style="font-size:clamp(28px,5vw,42px)">How it ended</h1>
+    <div class="qresult">${inner}</div>
+    <div class="btnrow" style="margin-top:18px">
+      <button class="btn ghost" id="qReview">Review the questions</button>
+      <button class="btn" id="qAgain">Play again</button>
+    </div>
+  </div>`;
+  document.getElementById("qReview").onclick=()=>{quizIdx=0;quizView="play";render();};
+  document.getElementById("qAgain").onclick=()=>{quizView="setup";render();};
 }
 
 /* redraw canvas on resize so it stays sharp/responsive */
